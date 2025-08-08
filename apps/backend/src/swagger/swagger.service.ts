@@ -5,7 +5,7 @@ import axios from 'axios';
 export class SwaggerService {
   async fetchSwaggerJson(): Promise<any> {
     const response = await axios.get(
-      'http://localhost:3000/api/swagger-docs.json',
+      'http://localhost:3000/api/v1-tournament/docs-json',
     );
     return response.data;
   }

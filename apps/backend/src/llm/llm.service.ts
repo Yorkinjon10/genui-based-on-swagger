@@ -64,7 +64,7 @@ export class LlmService {
       new HumanMessage(prompt),
     ]);
 
-    return response.content; // usually a string
+    return response.content;
   }
 
   async generateFrontendFromSwagger(swaggerJson: any, useOpenai = true) {
@@ -89,6 +89,10 @@ export class LlmService {
       : await this.model
           .invoke([new HumanMessage(prompt)])
           .then((r) => r.content);
+
+    console.log('--- RAW RESPONSE START ---');
+    console.log(raw);
+    console.log('--- RAW RESPONSE END ---');
 
     try {
       const start = raw.indexOf('[');

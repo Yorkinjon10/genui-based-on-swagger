@@ -53,6 +53,7 @@ export class LlmController {
   @Get()
   async triggerGeneration(@Query('useOpenai') useOpenai: string) {
     const swagger = await this.swaggerService.fetchSwaggerJson();
+
     return this.llmService.generateFrontendFromSwagger(
       swagger,
       useOpenai === 'true',
