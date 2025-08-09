@@ -8,7 +8,7 @@ export const GeneratedFileSchema = z.object({
   content: z
     .string()
     .describe(
-      'The full contents of the file as a valid React/Next.js component',
+      'The full contents of the file as a valid React/Next.js component. Every file must be complete and runnable.',
     ),
 });
 

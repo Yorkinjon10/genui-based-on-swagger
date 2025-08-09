@@ -68,25 +68,43 @@ export class LlmService {
   }
 
   async generateFrontendFromSwagger(swaggerJson: any, useOpenai = true) {
+    // const prompt = `
+    //   Generate frontend files (React + Next.js App Router + TailwindCSS) from this Swagger JSON.
+
+    //   Return ONLY a JSON array like:
+    //   [
+    //     { "filename": "app/users/page.tsx", "content": "..." },
+    //     { "filename": "components/UserForm.tsx", "content": "..." }
+    //   ]
+
+    //   The structure MUST follow this JSON schema:
+    //   ${JSON.stringify(SchemaString, null, 2)}
+
+    //   Swagger:
+    //   ${JSON.stringify(swaggerJson, null, 2)}
+    //   `;
+
     const prompt = `
-      Generate frontend files (React + Next.js App Router + TailwindCSS) from this Swagger JSON.
+    Generate frontend files (React + Next.js App Router + TailwindCSS) from this Swagger JSON.
 
-      Return ONLY a JSON array like:
-      [
-        { "filename": "app/users/page.tsx", "content": "..." },
-        { "filename": "components/UserForm.tsx", "content": "..." }
-      ]
+    Return ONLY a pure JSON array where each object has:
+    - "filename": the full relative file path (e.g. "app/users/page.tsx")
+    - "content": the COMPLETE, production-ready file contents as a single string
 
-      The structure MUST follow this JSON schema:
-      ${JSON.stringify(SchemaString, null, 2)}
+    ⛔ DO NOT use "..." or placeholders in "content".
+    ⛔ DO NOT include explanations, markdown, or code fences.
+    ✅ Every file must be complete and runnable.
 
-      Swagger:
-      ${JSON.stringify(swaggerJson, null, 2)}
-      `;
+    The structure MUST follow this JSON schema:
+    ${JSON.stringify(SchemaString, null, 2)}
+
+    Swagger:
+    ${JSON.stringify(swaggerJson, null, 2)}
+    `;
 
     const raw = useOpenai
       ? await this.askStructured(prompt)
-      : await this.model
+      : await this.openaiModel
           .invoke([new HumanMessage(prompt)])
           .then((r) => r.content);
 
@@ -101,6 +119,9 @@ export class LlmService {
 
       const parsed = JSON.parse(cleanJson);
       const valid = FileArraySchema.parse(parsed);
+
+      console.log(raw);
+      console.log(valid);
 
       await this.writeFiles(valid);
       return { success: true, count: valid.length };
