@@ -28,8 +28,7 @@ export class LlmService {
     topP: 0.9,
     streaming: true,
     maxTokens: 3000,
-    apiKey:
-      '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',
+    apiKey: 'YOUR_OPENAI_API_KEY', // Replace with your actual OpenAI API key
   });
 
   async *askStream(message: string): AsyncGenerator<MessageContent> {
